@@ -8,6 +8,10 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get 'clock_in_records', to: 'clock_in_records#index'
+      post 'clock_in_records', to: 'clock_in_records#create'
+      post 'follow', to: 'follows#create'
+      post 'unfollow', to: 'follows#unfollow'
+      get 'sleep_records', to: 'sleep_records#index'
     end
   end
 
