@@ -1,18 +1,23 @@
 class Api::V1::ClockInRecordsController < ApplicationController
   # POST /clock_in_records
   def create
-    clock_in_record = ClockInRecord.new(clock_in_record_params)
-    if clock_in_record.save
-      render json: clock_in_record, status: :created
-    else
-      render json: { errors: clock_in_record.errors.full_messages }, status: :unprocessable_entity
+    begin
+      ActiveRecord::Base.transaction do
+        clock_in_record = ClockIn.new(clock_in_record_params)
+        if clock_in_record.save
+          render json: clock_in_record, status: :created
+        else
+          render json: { errors: clock_in_record.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+    rescue StandardError => e
+      Rails.logger.error("Request failed: #{e.message}")
     end
   end
 
   # GET /clock_in_records
   def index
     clock_in_records = ClockIn.order(created_at: :desc)
-    debugger
     render json: clock_in_records
   end
 
